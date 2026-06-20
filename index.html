@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Recommender</title>
+</head>
+<body>
+
+    <h2>Movie Recommendation System 🎬</h2>
+
+    <input type="text" id="movieInput" placeholder="Enter movie name">
+    <button onclick="getRecommendations()">Recommend</button>
+
+    <h3>Recommended Movies:</h3>
+    <ul id="result"></ul>
+
+    <script>
+        async function getRecommendations() {
+            const movie = document.getElementById("movieInput").value;
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "";
+
+            if (!movie) {
+                alert("Please enter a movie name");
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `http://127.0.0.1:8000/recommend?movie=${encodeURIComponent(movie)}`
+                );
+
+                const data = await response.json();
+
+                data.forEach(item => {
+                    const li = document.createElement("li");
+                    li.innerText = `${item.movie} (score: ${item.score.toFixed(2)})`;
+                    resultDiv.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error(error);
+                alert("Error fetching recommendations");
+            }
+        }
+    </script>
+
+</body>
+</html>
